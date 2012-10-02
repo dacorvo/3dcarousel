@@ -19,7 +19,7 @@
 
 function onCellAdded(cell,index){
 	var img=document.createElement("img");
-	img.src=images[index%images.length];
+	img.src=path+images[index%images.length];
 	img.onclick = (function(scopedIndex){
 		return  function(event){
 			carousel.select(scopedIndex);
@@ -81,19 +81,22 @@ function buildCarousel(evt) {
 }
 
 var images = [
-'./sunsets/sunset-at-biscuit-basin.jpg',
-'./sunsets/sunset-bigbury-on-the-sea.jpg',
-'./sunsets/sunset-at-la-jolla-shores.jpg',
-'./sunsets/sunset-bigbury-over-see.jpg',
-'./sunsets/sunset-at-ocean-beach.jpg',
-'./sunsets/sunset-clouds-evening-beaches.jpg',
-'./sunsets/sunset-at-pacific-beach.jpg',
-'./sunsets/sunsets-piers-cafes.jpg',
-'./sunsets/sunset-at-point-loma.jpg',
-'./sunsets/sunsets-seagulls.jpg'
+'/sunsets/sunset-at-biscuit-basin.jpg',
+'/sunsets/sunset-bigbury-on-the-sea.jpg',
+'/sunsets/sunset-at-la-jolla-shores.jpg',
+'/sunsets/sunset-bigbury-over-see.jpg',
+'/sunsets/sunset-at-ocean-beach.jpg',
+'/sunsets/sunset-clouds-evening-beaches.jpg',
+'/sunsets/sunset-at-pacific-beach.jpg',
+'/sunsets/sunsets-piers-cafes.jpg',
+'/sunsets/sunset-at-point-loma.jpg',
+'/sunsets/sunsets-seagulls.jpg'
 ];
 var carousel = null;
 var swipe = null;
+var scripts = document.getElementsByTagName('script');
+var thisScript = scripts[scripts.length-1];
+var path = thisScript.src.replace(/\/demo\.js$/, '/');
 
 window.addEventListener("keydown",handleKeyDown,false);
 
