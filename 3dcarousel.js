@@ -59,9 +59,10 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   carouselRule +='-webkit-transform-style: preserve-3d;';
   carouselRule +='-webkit-transition: -webkit-transform 0.5s;';
   carouselRule +='width:'+this.cwidth+'px;';
-  carouselRule +='height'+this.cheight+'px;';
+  carouselRule +='height:'+this.cheight+'px;';
+  carouselRule +='-webkit-transform: translateZ(-'+this.radius+'px)';
   carouselRule +='}';
-  styleSheet.insertRule(carouselRule,0);
+  styleSheet.insertRule(carouselRule,styleSheet.cssRules.length);
   var cellRule = '.carousel .cell {';
   cellRule +='position:absolute;';
   cellRule +='left: 0px;';
@@ -69,9 +70,12 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   cellRule +='top: 0px;';
   cellRule +='bottom: 0px;';      
   cellRule +='margin: auto;';
+  cellRule +='width:'+this.cwidth+'px;';
+  cellRule +='height:'+this.cheight+'px;';
+  cellRule +='opacity:0.8;';
   cellRule +='-webkit-transition: -webkit-transform 0.5s, opacity 0.5s';
   cellRule +='}'; 
-  styleSheet.insertRule(cellRule,0);
+  styleSheet.insertRule(cellRule,styleSheet.cssRules.length);
   this.carousel.addEventListener("webkitTransitionEnd",
   function(event){
     _this.focus();
@@ -79,7 +83,6 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   container.style.setProperty("-webkit-perspective",1100);
   container.style.setProperty("-webkit-perspective-origin","50% 50%");
   for(var i=0; i<this.nbcell; i++) this.addCell(i);
-  this.carousel.style.setProperty("-webkit-transform",'translateZ(-'+this.radius+'px)',null);
   container.appendChild(this.carousel);
   this.focus();
 }
@@ -114,11 +117,8 @@ Carousel.prototype.select = function(index){
 
 Carousel.prototype.addCell = function(index){
   var cell=document.createElement("div");
-  cell.className = "cell"; 
-  cell.style.setProperty("width",this.cwidth+"px",null);
-  cell.style.setProperty("height",this.cheight+"px",null);
+  cell.className = "cell";
   cell.style.setProperty("-webkit-transform","rotateY("+index*360/this.nbcell+"deg) translateZ("+this.radius+"px)",null);
-  cell.style.setProperty("opacity","0.8",null);
   this.cells.push(cell);
   this.carousel.appendChild(cell);
   if(this.onadded) this.onadded(cell,index);
