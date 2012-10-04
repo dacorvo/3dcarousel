@@ -48,8 +48,30 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   this.frontIndex = 0;
   this.radius = Math.ceil(this.cwidth/2/Math.tan(Math.PI/this.nbcell));
   var _this = this;
-  this.carousel.style.setProperty("width",this.cwidth+"px",null);
-  this.carousel.style.setProperty("height",this.cheight+"px",null);
+  var styleSheet = this.getStyleSheet();
+  var carouselRule = '.carousel {';
+  carouselRule +='position:absolute;';
+  carouselRule +='left: 0px;';
+  carouselRule +='right: 0px;';
+  carouselRule +='top: 0px;';
+  carouselRule +='bottom: 0px;';      
+  carouselRule +='margin: auto;';
+  carouselRule +='-webkit-transform-style: preserve-3d;';
+  carouselRule +='-webkit-transition: -webkit-transform 0.5s;';
+  carouselRule +='width:'+this.cwidth+'px;';
+  carouselRule +='height'+this.cheight+'px;';
+  carouselRule +='}';
+  styleSheet.insertRule(carouselRule,0);
+  var cellRule = '.carousel .cell {';
+  cellRule +='position:absolute;';
+  cellRule +='left: 0px;';
+  cellRule +='right: 0px;';
+  cellRule +='top: 0px;';
+  cellRule +='bottom: 0px;';      
+  cellRule +='margin: auto;';
+  cellRule +='-webkit-transition: -webkit-transform 0.5s, opacity 0.5s';
+  cellRule +='}'; 
+  styleSheet.insertRule(cellRule,0);
   this.carousel.addEventListener("webkitTransitionEnd",
   function(event){
     _this.focus();
@@ -60,6 +82,15 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   this.carousel.style.setProperty("-webkit-transform",'translateZ(-'+this.radius+'px)',null);
   container.appendChild(this.carousel);
   this.focus();
+}
+
+Carousel.prototype.getStyleSheet = function() {
+  if( document.styleSheets.length == 0 ) {
+  	var style = document.createElement('style');
+	style.type = 'text/css';
+   	document.getElementsByTagName('head')[0].appendChild(style);
+  }
+  return document.styleSheets[0];
 }
 
 Carousel.prototype.focus = function(){
