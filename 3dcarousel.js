@@ -93,7 +93,7 @@ Carousel.prototype.getStyleSheet = function() {
 	style.type = 'text/css';
    	document.getElementsByTagName('head')[0].appendChild(style);
   }
-  return document.styleSheets[0];
+  return document.styleSheets[document.styleSheets.length-1];
 }
 
 Carousel.prototype.focus = function(){
