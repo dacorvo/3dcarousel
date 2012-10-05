@@ -48,8 +48,34 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   this.frontIndex = 0;
   this.radius = Math.ceil(this.cwidth/2/Math.tan(Math.PI/this.nbcell));
   var _this = this;
-  this.carousel.style.setProperty("width",this.cwidth+"px",null);
-  this.carousel.style.setProperty("height",this.cheight+"px",null);
+  var styleSheet = this.getStyleSheet();
+  var carouselRule = '.carousel {';
+  carouselRule +='position:absolute;';
+  carouselRule +='left: 0px;';
+  carouselRule +='right: 0px;';
+  carouselRule +='top: 0px;';
+  carouselRule +='bottom: 0px;';      
+  carouselRule +='margin: auto;';
+  carouselRule +='-webkit-transform-style: preserve-3d;';
+  carouselRule +='-webkit-transition: -webkit-transform 0.5s;';
+  carouselRule +='width:'+this.cwidth+'px;';
+  carouselRule +='height:'+this.cheight+'px;';
+  carouselRule +='-webkit-transform: translateZ(-'+this.radius+'px)';
+  carouselRule +='}';
+  styleSheet.insertRule(carouselRule,styleSheet.cssRules.length);
+  var cellRule = '.carousel .cell {';
+  cellRule +='position:absolute;';
+  cellRule +='left: 0px;';
+  cellRule +='right: 0px;';
+  cellRule +='top: 0px;';
+  cellRule +='bottom: 0px;';      
+  cellRule +='margin: auto;';
+  cellRule +='width:'+this.cwidth+'px;';
+  cellRule +='height:'+this.cheight+'px;';
+  cellRule +='opacity:0.8;';
+  cellRule +='-webkit-transition: -webkit-transform 0.5s, opacity 0.5s';
+  cellRule +='}'; 
+  styleSheet.insertRule(cellRule,styleSheet.cssRules.length);
   this.carousel.addEventListener("webkitTransitionEnd",
   function(event){
     _this.focus();
@@ -57,22 +83,28 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   container.style.setProperty("-webkit-perspective",1100);
   container.style.setProperty("-webkit-perspective-origin","50% 50%");
   for(var i=0; i<this.nbcell; i++) this.addCell(i);
-  this.carousel.style.setProperty("-webkit-transform",'translateZ(-'+this.radius+'px)',null);
   container.appendChild(this.carousel);
   this.focus();
 }
 
+Carousel.prototype.getStyleSheet = function() {
+  if( document.styleSheets.length == 0 ) {
+  	var style = document.createElement('style');
+	style.type = 'text/css';
+   	document.getElementsByTagName('head')[0].appendChild(style);
+  }
+  return document.styleSheets[document.styleSheets.length-1];
+}
+
 Carousel.prototype.focus = function(){
   var frontCell = this.cells[this.frontIndex];
-  frontCell.style.setProperty("opacity","1",null);
-  frontCell.style.setProperty("-webkit-transform","rotateY("+this.frontIndex*360/this.nbcell+"deg) translateZ("+this.radius*1.2+"px)",null);
+  frontCell.focus();
   if(this.onfocus) this.onfocus(frontCell,this.frontIndex);
 }
 
 Carousel.prototype.blur = function(){
   var frontCell = this.cells[this.frontIndex];
-  frontCell.style.setProperty("opacity","0.8",null);
-  frontCell.style.setProperty("-webkit-transform","rotateY("+this.frontIndex*360/this.nbcell+"deg) translateZ("+this.radius+"px)",null);
+  frontCell.blur();
   if(this.onblur) this.onblur(frontCell,this.frontIndex);
 }
 
@@ -82,12 +114,24 @@ Carousel.prototype.select = function(index){
 }
 
 Carousel.prototype.addCell = function(index){
+  var styleSheet = this.getStyleSheet();
+  var nthcellRule = '.cell:nth-child('+(index+1)+') {';
+  nthcellRule +='-webkit-transform: rotateY('+index*360/this.nbcell+'deg)';
+  nthcellRule +='translateZ('+this.radius+'px)';
+  nthcellRule +='}';
+  styleSheet.insertRule(nthcellRule,styleSheet.cssRules.length);
+  nthcellRule = '.cell:nth-child('+(index+1)+'):focus {';
+  // Prevent outline to be displayed wheh the element is focussed
+  nthcellRule +='outline: 0;';
+  nthcellRule +='opacity: 1.0;';
+  nthcellRule +='-webkit-transform: rotateY('+index*360/this.nbcell+'deg)';
+  nthcellRule +='translateZ('+(this.radius*1.2)+'px)';
+  nthcellRule +='}';
+  styleSheet.insertRule(nthcellRule,styleSheet.cssRules.length);
   var cell=document.createElement("div");
-  cell.className = "cell"; 
-  cell.style.setProperty("width",this.cwidth+"px",null);
-  cell.style.setProperty("height",this.cheight+"px",null);
-  cell.style.setProperty("-webkit-transform","rotateY("+index*360/this.nbcell+"deg) translateZ("+this.radius+"px)",null);
-  cell.style.setProperty("opacity","0.8",null);
+  cell.className = "cell";
+  // Make div focussable
+  cell.setAttribute("tabindex","-1");
   this.cells.push(cell);
   this.carousel.appendChild(cell);
   if(this.onadded) this.onadded(cell,index);
