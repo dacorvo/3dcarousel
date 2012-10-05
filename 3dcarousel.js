@@ -116,9 +116,14 @@ Carousel.prototype.select = function(index){
 }
 
 Carousel.prototype.addCell = function(index){
+  var styleSheet = this.getStyleSheet();
+  var nthcellRule = '.cell:nth-child('+(index+1)+') {';
+  nthcellRule +='-webkit-transform: rotateY('+index*360/this.nbcell+'deg)';
+  nthcellRule +='translateZ('+this.radius+'px)';
+  nthcellRule +='}';
+  styleSheet.insertRule(nthcellRule,styleSheet.cssRules.length);
   var cell=document.createElement("div");
   cell.className = "cell";
-  cell.style.setProperty("-webkit-transform","rotateY("+index*360/this.nbcell+"deg) translateZ("+this.radius+"px)",null);
   this.cells.push(cell);
   this.carousel.appendChild(cell);
   if(this.onadded) this.onadded(cell,index);
