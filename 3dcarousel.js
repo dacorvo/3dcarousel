@@ -98,15 +98,13 @@ Carousel.prototype.getStyleSheet = function() {
 
 Carousel.prototype.focus = function(){
   var frontCell = this.cells[this.frontIndex];
-  frontCell.style.setProperty("opacity","1",null);
-  frontCell.style.setProperty("-webkit-transform","rotateY("+this.frontIndex*360/this.nbcell+"deg) translateZ("+this.radius*1.2+"px)",null);
+  frontCell.focus();
   if(this.onfocus) this.onfocus(frontCell,this.frontIndex);
 }
 
 Carousel.prototype.blur = function(){
   var frontCell = this.cells[this.frontIndex];
-  frontCell.style.setProperty("opacity","0.8",null);
-  frontCell.style.setProperty("-webkit-transform","rotateY("+this.frontIndex*360/this.nbcell+"deg) translateZ("+this.radius+"px)",null);
+  frontCell.blur();
   if(this.onblur) this.onblur(frontCell,this.frontIndex);
 }
 
@@ -122,8 +120,18 @@ Carousel.prototype.addCell = function(index){
   nthcellRule +='translateZ('+this.radius+'px)';
   nthcellRule +='}';
   styleSheet.insertRule(nthcellRule,styleSheet.cssRules.length);
+  nthcellRule = '.cell:nth-child('+(index+1)+'):focus {';
+  // Prevent outline to be displayed wheh the element is focussed
+  nthcellRule +='outline: 0;';
+  nthcellRule +='opacity: 1.0;';
+  nthcellRule +='-webkit-transform: rotateY('+index*360/this.nbcell+'deg)';
+  nthcellRule +='translateZ('+(this.radius*1.2)+'px)';
+  nthcellRule +='}';
+  styleSheet.insertRule(nthcellRule,styleSheet.cssRules.length);
   var cell=document.createElement("div");
   cell.className = "cell";
+  // Make div focussable
+  cell.setAttribute("tabindex","-1");
   this.cells.push(cell);
   this.carousel.appendChild(cell);
   if(this.onadded) this.onadded(cell,index);
