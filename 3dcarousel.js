@@ -48,7 +48,6 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   this.frontIndex = 0;
   this.radius = Math.ceil(this.cwidth/2/Math.tan(Math.PI/this.nbcell));
   var _this = this;
-  var styleSheet = this.getStyleSheet();
   var carouselRule = '.carousel {';
   carouselRule +='position:absolute;';
   carouselRule +='left: 0px;';
@@ -56,13 +55,13 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   carouselRule +='top: 0px;';
   carouselRule +='bottom: 0px;';      
   carouselRule +='margin: auto;';
-  carouselRule +='-webkit-transform-style: preserve-3d;';
-  carouselRule +='-webkit-transition: -webkit-transform 0.5s;';
+  carouselRule +='transform-style: preserve-3d;';
+  carouselRule +='transition: transform 0.5s;';
   carouselRule +='width:'+this.cwidth+'px;';
   carouselRule +='height:'+this.cheight+'px;';
-  carouselRule +='-webkit-transform: translateZ(-'+this.radius+'px)';
+  carouselRule +='transform: translateZ(-'+this.radius+'px)';
   carouselRule +='}';
-  styleSheet.insertRule(carouselRule,styleSheet.cssRules.length);
+  this.insertRule(carouselRule);
   var cellRule = '.carousel .cell {';
   cellRule +='position:absolute;';
   cellRule +='left: 0px;';
@@ -73,9 +72,9 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   cellRule +='width:'+this.cwidth+'px;';
   cellRule +='height:'+this.cheight+'px;';
   cellRule +='opacity:0.8;';
-  cellRule +='-webkit-transition: -webkit-transform 0.5s, opacity 0.5s';
+  cellRule +='transition: all 0.5s';
   cellRule +='}'; 
-  styleSheet.insertRule(cellRule,styleSheet.cssRules.length);
+  this.insertRule(cellRule);
   this.carousel.addEventListener("webkitTransitionEnd",
   function(event){
     _this.focus();
@@ -87,13 +86,18 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   this.focus();
 }
 
-Carousel.prototype.getStyleSheet = function() {
+Carousel.prototype.insertRule = function(rule) {
   if( document.styleSheets.length == 0 ) {
   	var style = document.createElement('style');
 	style.type = 'text/css';
    	document.getElementsByTagName('head')[0].appendChild(style);
   }
-  return document.styleSheets[document.styleSheets.length-1];
+  var styleSheet = document.styleSheets[document.styleSheets.length-1];
+  // If prefixfree is available, use it
+  rule = window.PrefixFree ? PrefixFree.prefixCSS(rule,true):rule;
+  window.console.log(rule);
+  // Insert the rule
+  styleSheet.insertRule(rule,styleSheet.cssRules.length);  
 }
 
 Carousel.prototype.focus = function(){
@@ -114,20 +118,19 @@ Carousel.prototype.select = function(index){
 }
 
 Carousel.prototype.addCell = function(index){
-  var styleSheet = this.getStyleSheet();
   var nthcellRule = '.cell:nth-child('+(index+1)+') {';
-  nthcellRule +='-webkit-transform: rotateY('+index*360/this.nbcell+'deg)';
+  nthcellRule +='transform: rotateY('+index*360/this.nbcell+'deg)';
   nthcellRule +='translateZ('+this.radius+'px)';
   nthcellRule +='}';
-  styleSheet.insertRule(nthcellRule,styleSheet.cssRules.length);
+  this.insertRule(nthcellRule);
   nthcellRule = '.cell:nth-child('+(index+1)+'):focus {';
   // Prevent outline to be displayed wheh the element is focussed
   nthcellRule +='outline: 0;';
   nthcellRule +='opacity: 1.0;';
-  nthcellRule +='-webkit-transform: rotateY('+index*360/this.nbcell+'deg)';
+  nthcellRule +='transform: rotateY('+index*360/this.nbcell+'deg)';
   nthcellRule +='translateZ('+(this.radius*1.2)+'px)';
   nthcellRule +='}';
-  styleSheet.insertRule(nthcellRule,styleSheet.cssRules.length);
+  this.insertRule(nthcellRule);
   var cell=document.createElement("div");
   cell.className = "cell";
   // Make div focussable
