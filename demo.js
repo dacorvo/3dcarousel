@@ -47,17 +47,16 @@ function moveRight(){
 }
 
 function handleKeyDown(event){
-	switch(event.keyIdentifier){
-		case "Left":
+	switch(event.keyCode){
+		case 37:
 		carousel.rotate(Carousel.DIRECTION.RIGHT);
 		event.preventDefault();
 		break;
-		case "Right":
+		case 39:
 		carousel.rotate(Carousel.DIRECTION.LEFT);
 		event.preventDefault();
 		break;
-		case "Enter":
-		case "Down":
+		case 13:
 		carousel.select();
 		event.preventDefault();
 		break;
