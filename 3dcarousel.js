@@ -47,8 +47,9 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   this.theta = 0;
   this.frontIndex = 0;
   this.radius = Math.ceil(this.cwidth/2/Math.tan(Math.PI/this.nbcell));
+  this.id = this.getContainerId(container);
   var _this = this;
-  var carouselRule = '.carousel {';
+  var carouselRule = '#' + this.id + ' .carousel {';
   carouselRule +='position:absolute;';
   carouselRule +='left: 0px;';
   carouselRule +='right: 0px;';
@@ -62,7 +63,7 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   carouselRule +='transform: translateZ(-'+this.radius+'px)';
   carouselRule +='}';
   this.insertRule(carouselRule);
-  var cellRule = '.carousel .cell {';
+  var cellRule = '#' + this.id + ' .carousel .cell {';
   cellRule +='position:absolute;';
   cellRule +='left: 0px;';
   cellRule +='right: 0px;';
@@ -79,11 +80,23 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   function(event){
     _this.focus();
   },false);
-  container.style.setProperty("-webkit-perspective",1100);
-  container.style.setProperty("-webkit-perspective-origin","50% 50%");
+  var containerRule = '#' + this.id + ' {';
+  containerRule += "perspective: 1100px;";
+  containerRule += "perspective-origin: 50% 50%;";
+  containerRule += "}";
+  this.insertRule(containerRule);
   for(var i=0; i<this.nbcell; i++) this.addCell(i);
   container.appendChild(this.carousel);
   this.focus();
+}
+
+Carousel.prototype.getContainerId = function(container) {
+  if( ! container.id ) {
+  	var id = 0;
+  	while (document.getElementById('carousel'+ id)){};
+  	container.id = 'carousel'+ id;
+  }
+  return container.id;
 }
 
 Carousel.prototype.insertRule = function(rule) {
@@ -95,7 +108,6 @@ Carousel.prototype.insertRule = function(rule) {
   var styleSheet = document.styleSheets[document.styleSheets.length-1];
   // If prefixfree is available, use it
   rule = window.PrefixFree ? PrefixFree.prefixCSS(rule,true):rule;
-  window.console.log(rule);
   // Insert the rule
   styleSheet.insertRule(rule,styleSheet.cssRules.length);  
 }
@@ -155,6 +167,9 @@ RIGHT:1
 Carousel.prototype.rotate = function(direction) {
   this.blur();
   this.frontIndex = (this.frontIndex - direction + this.nbcell)%this.nbcell;
-	this.theta = (this.theta + direction*( 360 / this.nbcell ));
-  this.carousel.style.webkitTransform = 'translateZ(-'+this.radius+'px) rotateY(' + this.theta + 'deg)';
+  this.theta = (this.theta + direction*( 360 / this.nbcell ));
+  var style = 'transform: translateZ(-'+this.radius+'px) rotateY(' + this.theta + 'deg)';
+  // If prefixfree is available, use it
+  style = window.PrefixFree ? PrefixFree.prefixCSS(style,true):style;
+  this.carousel.setAttribute('style',style);
 }
