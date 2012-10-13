@@ -9,8 +9,8 @@ Check here the status of CSS 3D Transforms: [Can I use CSS3 3D Transforms?](http
 
 ##Usage
 
-<script type='text/javascript' src='prefixfree.js'></script>
-<script type='text/javascript' src='3dcarousel.js'></script>
+    <script type='text/javascript' src='prefixfree.js'></script>
+    <script type='text/javascript' src='3dcarousel.js'></script>
 
     function onCellAdded(cell,index) {
     	// Here define what goes inside the cell at given index
