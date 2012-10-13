@@ -1,8 +1,16 @@
 #3dcarousel.js 
 An all-purpose pure CSS 3D carousel.
-Requires Chrome or Safari.
+
+The Carousel takes advantage of CSS 3D transforms using a strictly compliant syntax.
+
+To use the Carousel in a browser using vendor-specific CSS 3D transforms, you have to include [PrefixFree](http://leaverou.github.com/prefixfree/) before the 3dcarousel script to automatically convert the generic CSS rules to your browser specific ones.  
+
+Check here the status of CSS 3D Transforms: [Can I use CSS3 3D Transforms?](http://caniuse.com/transforms3d)
 
 ##Usage
+
+    <script type='text/javascript' src='prefixfree.js'></script>
+    <script type='text/javascript' src='3dcarousel.js'></script>
 
     function onCellAdded(cell,index) {
     	// Here define what goes inside the cell at given index
