@@ -73,13 +73,10 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   cellRule +='width:'+this.cwidth+'px;';
   cellRule +='height:'+this.cheight+'px;';
   cellRule +='opacity:0.8;';
-  cellRule +='transition: all 0.5s';
+  cellRule +='transition-property: all;';
+  cellRule +='transition-duration: 0.5s;';
   cellRule +='}'; 
   this.insertRule(cellRule);
-  this.carousel.addEventListener("webkitTransitionEnd",
-  function(event){
-    _this.focus();
-  },false);
   var containerRule = '#' + this.id + ' {';
   containerRule += "perspective: 1100px;";
   containerRule += "perspective-origin: 50% 50%;";
@@ -132,7 +129,7 @@ Carousel.prototype.select = function(index){
 Carousel.prototype.addCell = function(index){
   var nthcellRule = '.cell:nth-child('+(index+1)+') {';
   nthcellRule +='transform: rotateY('+index*360/this.nbcell+'deg)';
-  nthcellRule +='translateZ('+this.radius+'px)';
+  nthcellRule +='translateZ('+this.radius+'px);';
   nthcellRule +='}';
   this.insertRule(nthcellRule);
   nthcellRule = '.cell:nth-child('+(index+1)+'):focus {';
@@ -140,7 +137,8 @@ Carousel.prototype.addCell = function(index){
   nthcellRule +='outline: 0;';
   nthcellRule +='opacity: 1.0;';
   nthcellRule +='transform: rotateY('+index*360/this.nbcell+'deg)';
-  nthcellRule +='translateZ('+(this.radius*1.2)+'px)';
+  nthcellRule +='translateZ('+(this.radius*1.2)+'px);';
+  nthcellRule +='transition-delay: 0.5s';
   nthcellRule +='}';
   this.insertRule(nthcellRule);
   var cell=document.createElement("div");
@@ -172,4 +170,5 @@ Carousel.prototype.rotate = function(direction) {
   // If prefixfree is available, use it
   style = window.PrefixFree ? PrefixFree.prefixCSS(style,true):style;
   this.carousel.setAttribute('style',style);
+  this.focus();
 }
