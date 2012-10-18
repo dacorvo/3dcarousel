@@ -133,9 +133,9 @@ Carousel.prototype.addCell = function(index){
   nthcellRule +='}';
   this.insertRule(nthcellRule);
   nthcellRule = '.cell:nth-child('+(index+1)+'):focus {';
-  // Prevent outline to be displayed wheh the element is focussed
+  // Prevent outline to be displayed when the element is focussed
   nthcellRule +='outline: 0;';
-  nthcellRule +='opacity: 1.0;';
+  nthcellRule +='opacity: 1.0 !important;';
   nthcellRule +='transform: rotateY('+index*360/this.nbcell+'deg)';
   nthcellRule +='translateZ('+(this.radius*1.2)+'px);';
   nthcellRule +='transition-delay: 0.5s';
