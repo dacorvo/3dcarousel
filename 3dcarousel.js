@@ -50,16 +50,12 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   this.id = this.getContainerId(container);
   var _this = this;
   var carouselRule = '#' + this.id + ' .carousel {';
-  carouselRule +='position:absolute;';
-  carouselRule +='left: 0px;';
-  carouselRule +='right: 0px;';
-  carouselRule +='top: 0px;';
-  carouselRule +='bottom: 0px;';      
-  carouselRule +='margin: auto;';
+  carouselRule +='position:relative;';
   carouselRule +='transform-style: preserve-3d;';
   carouselRule +='transition: transform 0.5s;';
-  carouselRule +='width:'+this.cwidth+'px;';
-  carouselRule +='height:'+this.cheight+'px;';
+  carouselRule +='width:100%;';
+  carouselRule +='min-width:'+this.cwidth*2+'px;';
+  carouselRule +='min-height:'+this.cheight*1.2+'px;';
   carouselRule +='transform: translateZ(-'+this.radius+'px)';
   carouselRule +='}';
   this.insertRule(carouselRule);
@@ -73,13 +69,10 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   cellRule +='width:'+this.cwidth+'px;';
   cellRule +='height:'+this.cheight+'px;';
   cellRule +='opacity:0.8;';
-  cellRule +='transition: all 0.5s';
+  cellRule +='transition-property: all;';
+  cellRule +='transition-duration: 0.5s;';
   cellRule +='}'; 
   this.insertRule(cellRule);
-  this.carousel.addEventListener("webkitTransitionEnd",
-  function(event){
-    _this.focus();
-  },false);
   var containerRule = '#' + this.id + ' {';
   containerRule += "perspective: 1100px;";
   containerRule += "perspective-origin: 50% 50%;";
@@ -132,15 +125,16 @@ Carousel.prototype.select = function(index){
 Carousel.prototype.addCell = function(index){
   var nthcellRule = '.cell:nth-child('+(index+1)+') {';
   nthcellRule +='transform: rotateY('+index*360/this.nbcell+'deg)';
-  nthcellRule +='translateZ('+this.radius+'px)';
+  nthcellRule +='translateZ('+this.radius+'px);';
   nthcellRule +='}';
   this.insertRule(nthcellRule);
   nthcellRule = '.cell:nth-child('+(index+1)+'):focus {';
-  // Prevent outline to be displayed wheh the element is focussed
+  // Prevent outline to be displayed when the element is focussed
   nthcellRule +='outline: 0;';
-  nthcellRule +='opacity: 1.0;';
+  nthcellRule +='opacity: 1.0 !important;';
   nthcellRule +='transform: rotateY('+index*360/this.nbcell+'deg)';
-  nthcellRule +='translateZ('+(this.radius*1.2)+'px)';
+  nthcellRule +='translateZ('+(this.radius*1.2)+'px);';
+  nthcellRule +='transition-delay: 0.5s';
   nthcellRule +='}';
   this.insertRule(nthcellRule);
   var cell=document.createElement("div");
@@ -172,4 +166,5 @@ Carousel.prototype.rotate = function(direction) {
   // If prefixfree is available, use it
   style = window.PrefixFree ? PrefixFree.prefixCSS(style,true):style;
   this.carousel.setAttribute('style',style);
+  this.focus();
 }
