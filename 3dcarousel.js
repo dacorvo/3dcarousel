@@ -56,7 +56,7 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   carouselRule +='width:100%;';
   carouselRule +='min-width:'+this.cwidth*2+'px;';
   carouselRule +='min-height:'+this.cheight*1.2+'px;';
-  carouselRule +='transform: translateZ(-'+this.radius+'px)';
+  carouselRule +='transform: perspective(1100px) translateZ(-'+this.radius+'px)';
   carouselRule +='}';
   this.insertRule(carouselRule);
   var cellRule = '#' + this.id + ' .carousel .cell {';
@@ -73,11 +73,6 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   cellRule +='transition-duration: 0.5s;';
   cellRule +='}'; 
   this.insertRule(cellRule);
-  var containerRule = '#' + this.id + ' {';
-  containerRule += "perspective: 1100px;";
-  containerRule += "perspective-origin: 50% 50%;";
-  containerRule += "}";
-  this.insertRule(containerRule);
   for(var i=0; i<this.nbcell; i++) this.addCell(i);
   container.appendChild(this.carousel);
   this.focus();
@@ -162,7 +157,7 @@ Carousel.prototype.rotate = function(direction) {
   this.blur();
   this.frontIndex = (this.frontIndex - direction + this.nbcell)%this.nbcell;
   this.theta = (this.theta + direction*( 360 / this.nbcell ));
-  var style = 'transform: translateZ(-'+this.radius+'px) rotateY(' + this.theta + 'deg)';
+  var style = 'transform: perspective(1100px) translateZ(-'+this.radius+'px) rotateY(' + this.theta + 'deg)';
   // If prefixfree is available, use it
   style = window.PrefixFree ? PrefixFree.prefixCSS(style,true):style;
   this.carousel.setAttribute('style',style);
