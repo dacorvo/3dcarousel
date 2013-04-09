@@ -35,7 +35,8 @@
 */
 function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselect){
   this.carousel = document.createElement("div");
-  this.carousel.className = "carousel";
+  this.id = "Carousel" + Math.floor((Math.random()*10000000)+1);;
+  this.carousel.id = this.id;
   this.nbcell = nbcell;
   this.cwidth = cwidth;
   this.cheight = cheight;
@@ -47,9 +48,8 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   this.theta = 0;
   this.frontIndex = 0;
   this.radius = Math.ceil(this.cwidth/2/Math.tan(Math.PI/this.nbcell));
-  this.id = this.getContainerId(container);
   var _this = this;
-  var carouselRule = '#' + this.id + ' .carousel {';
+  var carouselRule = '#' + this.id + ' {';
   carouselRule +='position:relative;';
   carouselRule +='transform-style: preserve-3d;';
   carouselRule +='transition: transform 0.5s;';
@@ -59,7 +59,7 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   carouselRule +='transform: perspective(1100px) translateZ(-'+this.radius+'px)';
   carouselRule +='}';
   this.insertRule(carouselRule);
-  var cellRule = '#' + this.id + ' .carousel .cell {';
+  var cellRule = '#' + this.id + ' .cell {';
   cellRule +='position:absolute;';
   cellRule +='left: 0px;';
   cellRule +='right: 0px;';
@@ -76,15 +76,6 @@ function Carousel(container,nbcell,cwidth,cheight,onadded,onfocus,onblur,onselec
   for(var i=0; i<this.nbcell; i++) this.addCell(i);
   container.appendChild(this.carousel);
   this.focus();
-}
-
-Carousel.prototype.getContainerId = function(container) {
-  if( ! container.id ) {
-  	var id = 0;
-  	while (document.getElementById('carousel'+ id)){};
-  	container.id = 'carousel'+ id;
-  }
-  return container.id;
 }
 
 Carousel.prototype.insertRule = function(rule) {
@@ -118,12 +109,12 @@ Carousel.prototype.select = function(index){
 }
 
 Carousel.prototype.addCell = function(index){
-  var nthcellRule = '.cell:nth-child('+(index+1)+') {';
+  var nthcellRule = '#' + this.id + ' .cell:nth-child('+(index+1)+') {';
   nthcellRule +='transform: rotateY('+index*360/this.nbcell+'deg)';
   nthcellRule +='translateZ('+this.radius+'px);';
   nthcellRule +='}';
   this.insertRule(nthcellRule);
-  nthcellRule = '.cell:nth-child('+(index+1)+'):focus {';
+  nthcellRule = '#' + this.id + ' .cell:nth-child('+(index+1)+'):focus {';
   // Prevent outline to be displayed when the element is focussed
   nthcellRule +='outline: 0;';
   nthcellRule +='opacity: 1.0 !important;';
